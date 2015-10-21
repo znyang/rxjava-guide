@@ -116,7 +116,7 @@ public class BookListFragment extends ListFragment {
     private void remoteDataWithObs(){
         IObsDummyProvider provider = new ObsRemoteDummyProvider();
         subscriptions.add(provider.createDummyItems()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(this::resetData)
                 .subscribe(this::resetAdapter));

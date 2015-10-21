@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import com.zen.android.rxjava.dummy.DummyItem;
+
 
 /**
  * An activity representing a list of Books. This activity
@@ -74,13 +76,13 @@ public class BookListActivity extends AppCompatActivity
      * indicating that the item with the given ID was selected.
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(DummyItem item) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(BookDetailFragment.ARG_ITEM_ID, id);
+            arguments.putSerializable(BookDetailFragment.ARG_ITEM, item);
             BookDetailFragment fragment = new BookDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -91,7 +93,7 @@ public class BookListActivity extends AppCompatActivity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, BookDetailActivity.class);
-            detailIntent.putExtra(BookDetailFragment.ARG_ITEM_ID, id);
+            detailIntent.putExtra(BookDetailFragment.ARG_ITEM, item);
             startActivity(detailIntent);
         }
     }

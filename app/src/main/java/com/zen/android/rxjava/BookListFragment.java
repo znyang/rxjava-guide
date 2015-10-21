@@ -1,13 +1,22 @@
 package com.zen.android.rxjava;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.zen.android.rxjava.dummy.DummyContent;
+import com.zen.android.rxjava.data.RemoteDummyProvider;
+import com.zen.android.rxjava.data.IDummyProvider;
+import com.zen.android.rxjava.dummy.DummyItem;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A list fragment representing a list of Books. This fragment
@@ -37,6 +46,18 @@ public class BookListFragment extends ListFragment {
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
+    private ArrayAdapter<DummyItem> adapter;
+
+    /**
+     * An array of sample (dummy) items.
+     */
+    public List<DummyItem> items = new ArrayList<>();
+
+    /**
+     * A map of sample (dummy) items, by ID.
+     */
+    public Map<String, DummyItem> itemMap = new HashMap<>();
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -46,7 +67,7 @@ public class BookListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(DummyItem item);
     }
 
     /**
@@ -55,7 +76,7 @@ public class BookListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(DummyItem item) {
         }
     };
 
@@ -71,11 +92,44 @@ public class BookListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+        adapter = createAdapter(Collections.EMPTY_LIST);
+        setListAdapter(adapter);
+
+        remoteData();
+    }
+
+    private ArrayAdapter<DummyItem> createAdapter(List<DummyItem> data) {
+        return new ArrayAdapter<DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                data);
+    }
+
+    private void remoteData(){
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                IDummyProvider provider = new RemoteDummyProvider();
+                List<DummyItem> data = provider.createDummyItems();
+
+                items.clear();
+                itemMap.clear();
+                for (DummyItem item : data) {
+                    items.add(item);
+                    itemMap.put(item.id, item);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                adapter = createAdapter(items);
+                setListAdapter(adapter);
+            }
+        }.execute();
     }
 
     @Override
@@ -113,9 +167,12 @@ public class BookListFragment extends ListFragment {
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
 
+        if(items == null || items.isEmpty()){
+            return;
+        }
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(items.get(position));
     }
 
     @Override

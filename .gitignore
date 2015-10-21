@@ -32,3 +32,4 @@ proguard/
 gen-*/
 target/
 .idea/
+captures/

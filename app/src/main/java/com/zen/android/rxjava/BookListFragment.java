@@ -10,6 +10,8 @@ import android.widget.ListView;
 
 import com.zen.android.rxjava.data.RemoteDummyProvider;
 import com.zen.android.rxjava.data.IDummyProvider;
+import com.zen.android.rxjava.data.obs.IObsDummyProvider;
+import com.zen.android.rxjava.data.obs.ObsRemoteDummyProvider;
 import com.zen.android.rxjava.dummy.DummyItem;
 
 import java.util.ArrayList;
@@ -17,6 +19,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
 
 /**
  * A list fragment representing a list of Books. This fragment
@@ -58,6 +65,8 @@ public class BookListFragment extends ListFragment {
      */
     public Map<String, DummyItem> itemMap = new HashMap<>();
 
+    SubscriptionList subscriptions = new SubscriptionList();
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -92,10 +101,8 @@ public class BookListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // TODO: replace with a real list adapter.
-        adapter = createAdapter(Collections.EMPTY_LIST);
-        setListAdapter(adapter);
-
-        remoteData();
+        resetAdapter(Collections.EMPTY_LIST);
+        remoteDataWithObs();
     }
 
     private ArrayAdapter<DummyItem> createAdapter(List<DummyItem> data) {
@@ -106,6 +113,15 @@ public class BookListFragment extends ListFragment {
                 data);
     }
 
+    private void remoteDataWithObs(){
+        IObsDummyProvider provider = new ObsRemoteDummyProvider();
+        subscriptions.add(provider.createDummyItems()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::resetData)
+                .subscribe(this::resetAdapter));
+    }
+
     private void remoteData(){
         new AsyncTask<Void,Void,Void>(){
 
@@ -113,23 +129,30 @@ public class BookListFragment extends ListFragment {
             protected Void doInBackground(Void... params) {
                 IDummyProvider provider = new RemoteDummyProvider();
                 List<DummyItem> data = provider.createDummyItems();
-
-                items.clear();
-                itemMap.clear();
-                for (DummyItem item : data) {
-                    items.add(item);
-                    itemMap.put(item.id, item);
-                }
+                resetData(data);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                adapter = createAdapter(items);
-                setListAdapter(adapter);
+                resetAdapter(items);
             }
         }.execute();
+    }
+
+    private void resetAdapter(List<DummyItem> items) {
+        adapter = createAdapter(items);
+        setListAdapter(adapter);
+    }
+
+    private void resetData(List<DummyItem> data) {
+        items.clear();
+        itemMap.clear();
+        for (DummyItem item : data) {
+            items.add(item);
+            itemMap.put(item.id, item);
+        }
     }
 
     @Override
@@ -161,6 +184,7 @@ public class BookListFragment extends ListFragment {
 
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
+        subscriptions.unsubscribe();
     }
 
     @Override

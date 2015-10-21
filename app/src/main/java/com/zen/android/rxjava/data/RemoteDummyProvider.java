@@ -1,6 +1,7 @@
 package com.zen.android.rxjava.data;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.zen.android.rxjava.dummy.DummyItem;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 /**
  * RemoteDummyProvider
- * <p/>
+ * <p>
  *
  * @author yangz
  * @version 2015/10/21
@@ -20,6 +21,7 @@ public class RemoteDummyProvider implements IDummyProvider {
 
     @Override
     public List<DummyItem> createDummyItems() {
+        Log.d("rxjava-guide", "createDummyItems Thread:" + Thread.currentThread().getName());
         List<DummyItem> data = new ArrayList<>();
         for (int i = COUNT; --i >= 0; ) {
             data.add(createDummyItem(COUNT - i));

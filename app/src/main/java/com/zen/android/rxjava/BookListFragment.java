@@ -83,10 +83,7 @@ public class BookListFragment extends ListFragment {
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
      */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(DummyItem item) {
-        }
+    private static Callbacks sDummyCallbacks = item -> {
     };
 
     /**

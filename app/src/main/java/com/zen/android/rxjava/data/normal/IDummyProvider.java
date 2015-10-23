@@ -1,4 +1,4 @@
-package com.zen.android.rxjava.data;
+package com.zen.android.rxjava.data.normal;
 
 import com.zen.android.rxjava.dummy.DummyItem;
 

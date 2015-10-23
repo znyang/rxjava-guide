@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.zen.android.rxjava.data.RemoteDummyProvider;
-import com.zen.android.rxjava.data.IDummyProvider;
+import com.zen.android.rxjava.data.normal.RemoteDummyProvider;
+import com.zen.android.rxjava.data.normal.IDummyProvider;
 import com.zen.android.rxjava.data.obs.IObsDummyProvider;
 import com.zen.android.rxjava.data.obs.ObsRemoteDummyProvider;
 import com.zen.android.rxjava.dummy.DummyItem;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
 

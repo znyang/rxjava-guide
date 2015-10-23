@@ -1,6 +1,6 @@
 package com.zen.android.rxjava.data.obs;
 
-import com.zen.android.rxjava.data.RemoteDummyProvider;
+import com.zen.android.rxjava.data.normal.RemoteDummyProvider;
 import com.zen.android.rxjava.dummy.DummyItem;
 
 import java.util.List;

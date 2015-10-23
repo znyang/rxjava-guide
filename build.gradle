@@ -26,6 +26,7 @@ allprojects {
         rxJava = "io.reactivex:rxjava:1.0.14"
         rxAndroid = "io.reactivex:rxandroid:1.0.1"
         dagger = "com.google.dagger:dagger:2.0"
+        robolectric = "org.robolectric:robolectric:3.0"
     }
 }
 

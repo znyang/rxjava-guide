@@ -30,4 +30,5 @@ dependencies {
 
     compile parent.rxJava
     compile parent.rxAndroid
+    testCompile parent.robolectric
 }

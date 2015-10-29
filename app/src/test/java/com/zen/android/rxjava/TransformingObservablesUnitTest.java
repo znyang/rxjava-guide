@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
 
@@ -84,6 +85,10 @@ public class TransformingObservablesUnitTest {
                 });
     }
 
-
-
+    @Test
+    public void testScan() throws Exception {
+        Observable.just("1", "2", "3", "4", "5")
+                .scan((s, s2) -> s + "-" + s2)
+                .subscribe(Logger::log);
+    }
 }

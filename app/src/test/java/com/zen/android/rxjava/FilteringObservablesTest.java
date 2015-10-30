@@ -31,7 +31,7 @@ public class FilteringObservablesTest {
 
     @Test
     public void testTake() throws Exception {
-        Observable.range(0,10)
+        Observable.range(0, 10)
                 .take(3)
                 .map(String::valueOf)
                 .subscribe(Logger::log);
@@ -49,6 +49,14 @@ public class FilteringObservablesTest {
     public void testFirstOrDefault() throws Exception {
         Observable.empty()
                 .firstOrDefault(1)
+                .map(String::valueOf)
+                .subscribe(Logger::log);
+    }
+
+    @Test
+    public void testSkip() throws Exception {
+        Observable.range(0, 10)
+                .skip(4)
                 .map(String::valueOf)
                 .subscribe(Logger::log);
     }

@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.zen.android.rxjava.base.Logger;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * FilteringObservablesTest
@@ -14,7 +17,7 @@ import rx.Observable;
  * @author zeny
  * @version 2015.10.30
  */
-public class FilteringObservablesTest {
+public class FilteringObservablesTest extends TestCase {
 
     @Test
     public void testDebounce() throws Exception {
@@ -59,5 +62,14 @@ public class FilteringObservablesTest {
                 .skip(4)
                 .map(String::valueOf)
                 .subscribe(Logger::log);
+    }
+
+    @Test
+    public void testElementAt() throws Exception {
+        Observable.range(0, 10)
+                .elementAt(3)
+                .subscribe(integer -> {
+                    assertEquals(integer.intValue(), 3);
+                });
     }
 }

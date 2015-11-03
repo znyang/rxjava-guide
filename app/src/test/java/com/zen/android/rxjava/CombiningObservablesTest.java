@@ -28,4 +28,15 @@ public class CombiningObservablesTest {
                 .subscribe(Logger::log);
         Thread.sleep(1);
     }
+
+    @Test
+    public void testJoin() throws Exception {
+        Observable.just(1, 2, 3)
+                .join(Observable.just("A", "B"),
+                        integer -> Observable.just(String.valueOf(integer)),
+                        Observable::just,
+                        (integer, s) -> String.valueOf(integer) + "-" + s)
+                .subscribe(Logger::log);
+        Thread.sleep(1);
+    }
 }

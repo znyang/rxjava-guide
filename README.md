@@ -54,13 +54,10 @@ D/rxjava-guide: createDummyItems Thread:main
 
 而响应式编程的魅力还在于它丰富的操作符。
 
-### create operation
-
-```java
-Observable.just(new RemoteDummyProvider().createDummyItems());
-```
+在这里我把各种操作符的示例写在test中，仅做演示，不做验证。
 
 ## 平台相关
 
 在使用AsyncTask时，我们会遇到一些麻烦，比如配置改变/页面回收/应用回收，这个Task无法控制，有时任务结束后要操作页面元素就会出现crash，所以它不是最好的选择。
 
+我们可以借助RxAndroid/RxBinding库来处理平台相关的问题。

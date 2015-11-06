@@ -112,11 +112,15 @@ public class CreatingObservablesUnitTest {
     @Test
     public void testDeferOperator() throws Exception {
         Logger.log("testDeferOperator");
+        CountDownLatch latch = new CountDownLatch(1);
         Observable<String> obs = Observable.defer(() -> Observable.just(RxUtil.gen("1"), RxUtil.gen("2")));
         obs.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.newThread())
-                .subscribe(Logger::log);
-        Thread.sleep(200);
+                .subscribe(s -> {
+                    Logger.log(s);
+                    latch.countDown();
+                });
+        latch.await();
     }
 
     /**

@@ -19,6 +19,8 @@ public class CombiningObservablesTest {
     public void testZip() throws Exception {
         Observable.zip(Observable.just("1", "2", "3"), Observable.just("A", "B"), (s, s2) -> s + s2)
                 .subscribe(Logger::log);
+
+        // output: 1A 2B
     }
 
     @Test
@@ -27,6 +29,8 @@ public class CombiningObservablesTest {
                 .map(String::valueOf)
                 .subscribe(Logger::log);
         Thread.sleep(1);
+
+        // output 1..10 2..5
     }
 
     @Test
@@ -38,5 +42,7 @@ public class CombiningObservablesTest {
                         (integer, s) -> String.valueOf(integer) + "-" + s)
                 .subscribe(Logger::log);
         Thread.sleep(1);
+
+        // output
     }
 }

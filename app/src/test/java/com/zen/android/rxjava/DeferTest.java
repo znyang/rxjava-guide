@@ -70,7 +70,6 @@ public class DeferTest {
     public void testDeferSync() throws Exception {
         createObservable()
                 .subscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.computation())
                 .subscribe(integer -> {
                     showLog("subscribe " + integer);
                 });

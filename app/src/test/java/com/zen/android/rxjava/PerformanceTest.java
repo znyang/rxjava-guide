@@ -22,18 +22,21 @@ public class PerformanceTest {
         long start = System.currentTimeMillis();
 
         int total = 0;
-        for (int i = 0; i < level; i++) {
-            total += data[i];
+        for (int d : data) {
+            total += d;
         }
         long cost = System.currentTimeMillis() - start;
-        System.out.println("cost1 " + cost);
+        System.out.println("foreach cost: " + cost);
+    }
 
-        start = System.currentTimeMillis();
-        Observable.just(1, 2, 3)
+    @Test
+    public void testReactive() throws Exception {
+        long start = System.currentTimeMillis();
+        Observable.range(0, 10)
                 .subscribe(r -> {
                     //r++;
                 });
-        cost = System.currentTimeMillis() - start;
-        System.out.println("cost2 " + cost);
+        long cost = System.currentTimeMillis() - start;
+        System.out.println("reactive cost: " + cost);
     }
 }

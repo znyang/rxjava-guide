@@ -27,14 +27,15 @@ public class DeferTest {
         Thread.sleep(5);
     }
 
+
     @Test
     public void testDeferWithObserveOn() throws Exception {
         // emit values & doOnNext in Main
         // subscribe in New Thread
         createObservable()
                 .observeOn(Schedulers.newThread())
-                .subscribe(integer -> {
-                    showLog("subscribe " + integer);
+                .subscribe(next -> {
+                    showLog("subscribe " + next);
                 });
         showLog("end");
         Thread.sleep(5);
@@ -82,8 +83,7 @@ public class DeferTest {
         return Observable.defer(() -> {
             showLog("emit values");
             return Observable.just(1, 2, 3);
-        })
-                .doOnNext(integer -> showLog("doOnNext " + integer));
+        }).doOnNext(next -> showLog("next " + next));
     }
 
     private static void showLog(String tag) {

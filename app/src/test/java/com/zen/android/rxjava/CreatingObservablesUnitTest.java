@@ -44,16 +44,19 @@ public class CreatingObservablesUnitTest {
         final boolean hasError = false;
 
         Observable<String> obs = buildObservableByCreate(hasError);
-        obs.subscribe(
-                s -> Logger.log("onNext - " + s),
-                e -> {
-                    Logger.log("onError");
-                    assertTrue(hasError);
-                },
-                () -> {
-                    Logger.log("onCompleted");
-                    assertFalse(hasError);
-                });
+        Logger.log("create");
+        obs.observeOn(Schedulers.newThread())
+                .subscribe(
+                        s -> Logger.log("onNext - " + s),
+                        e -> {
+                            Logger.log("onError");
+                            assertTrue(hasError);
+                        },
+                        () -> {
+                            Logger.log("onCompleted");
+                            assertFalse(hasError);
+                        });
+        Logger.log("end");
     }
 
     @NonNull

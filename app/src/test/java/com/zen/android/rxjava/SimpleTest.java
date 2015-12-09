@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Iterator;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -14,6 +15,10 @@ import rx.schedulers.Schedulers;
  * @version 2015.11.30
  */
 public class SimpleTest {
+
+    private void log(Integer log) {
+        System.out.println(Thread.currentThread().getName() + " - " + log);
+    }
 
     private void log(String log) {
         System.out.println(Thread.currentThread().getName() + " - " + log);
@@ -77,13 +82,13 @@ public class SimpleTest {
 
     @Test
     public void testConcat() throws Exception {
-    Observable<String> disk = Observable.defer(() -> Observable.just(localData()));
-    Observable<String> network = Observable.defer(() -> Observable.just(remoteData()));
+        Observable<String> disk = Observable.defer(() -> Observable.just(localData()));
+        Observable<String> network = Observable.defer(() -> Observable.just(remoteData()));
 
-    // 产生两次值事件，分别访问本地、网络
-    Observable.concat(disk, network).subscribe();
-    // 只产生一个值，如果本地没有就取网络
-    Observable.concat(disk, network).first().subscribe();
+        // 产生两次值事件，分别访问本地、网络
+        Observable.concat(disk, network).subscribe();
+        // 只产生一个值，如果本地没有就取网络
+        Observable.concat(disk, network).first().subscribe();
     }
 
     private String localData() {
@@ -92,5 +97,20 @@ public class SimpleTest {
 
     private String remoteData() {
         return "2";
+    }
+
+    @Test
+    public void testObservableOn() throws Exception {
+        Observable.just(1, 2) // IO 线程，由 subscribeOn() 指定
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
+                .map(data -> {
+                    log("2 " + data);
+                    return data;
+                }) // IO 线程，由 observeOn() 指定
+                .observeOn(Schedulers.newThread())
+                .subscribe(this::log);  // Android 主线程，由 observeOn() 指定
+        Thread.sleep(50);
     }
 }

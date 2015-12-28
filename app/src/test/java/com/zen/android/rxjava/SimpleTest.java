@@ -2,10 +2,8 @@ package com.zen.android.rxjava;
 
 import org.junit.Test;
 
-import java.util.Iterator;
-
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -91,12 +89,26 @@ public class SimpleTest {
         Observable.concat(disk, network).first().subscribe();
     }
 
-    private String localData() {
-        return "1";
+
+    private Observable<String> requestStep1() {
+        return Observable.just("1");
+    }
+
+    private Observable<String> requestStep2(String data) {
+        return Observable.just(data + "2");
+    }
+
+    @Test
+    public void testFlatMap() throws Exception {
+        requestStep1().flatMap(this::requestStep2).subscribe(this::log);
     }
 
     private String remoteData() {
         return "2";
+    }
+
+    private String localData() {
+        return "1";
     }
 
     @Test
